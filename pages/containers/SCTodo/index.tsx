@@ -1,23 +1,26 @@
 import { Profiler, useState } from "react"
 import styled, { css } from 'styled-components'
 
-export const SCTodo = () => {
+const getRandomMsg = () => {
+  return Array.from({ length: 1000 }, (_, item) => ({ id: item }))
+}
+
+export default () => {
   const [todo, setTodo] = useState<string[]>([]);
   const handleClick = () => {
     setTodo([...todo, todo.length.toString()]);
   }
   return (
-    <Profiler id="styled-components" onRender={(id, phase, actualDuration, baseDuration, startTime, commitTime, intersections) => {
-      console.log(`${id}: `, {
-        id, phase, actualDuration, baseDuration, startTime, commitTime, intersections
-      })
-    }}>
+    <>
       <STitle>Styled components Light Todo List</STitle>
       <SContainer>
         <SAddBtn onClick={handleClick}>Добавить запись</SAddBtn>
-        {todo.map((item) => <SSpan isEven={Number(item) % 2 === 0}>{item}</SSpan>)}
+        {todo.map((item) => <SSpan key={item}>{item}</SSpan>)}
       </SContainer>
-    </Profiler>
+      <SContainerRow>
+        {getRandomMsg().map(item => <SSpan key={item.id}>{item.id}</SSpan>)}
+      </SContainerRow>
+    </>
   )
 }
 
@@ -27,19 +30,24 @@ const SContainer = styled.div`
   flex-direction: column;
 `
 
+const SContainerRow = styled.div`
+  display: flex;
+  flex-wrap: wrap
+`
+
 const STitle = styled.h1`
 `;
 
 const SAddBtn = styled.button`
-  width: 200px
+  width: 200px;
 `
 
-const SSpan = styled.span<{ isEven: boolean }>(
-  ({ isEven }) => css`
+const SSpan = styled.span(
+  () => css`
   width: 100px;
-  border: ${isEven ? "red" : "green"};
-  background: ${isEven ? "pink" : "red"};
-  color:  ${isEven ? "black" : "white"}
+  border: green;
+  background: red;
+  color: white;
   padding: 5px;
   margin: 10px;
   text-align: center;
